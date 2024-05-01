@@ -1,0 +1,5 @@
+checkpoints
+data
+lightning_logs
+wandb
+__pycache__
