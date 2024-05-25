@@ -7,13 +7,12 @@ import time
 from model.model import SteeringModel
 import torchvision.transforms as transforms
 from PIL import Image
-from pynput import keyboard
 
 # Connect to the server
 while True:
     try:
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        server_address = ('192.168.1.212', 12345)  # Replace with the server IP
+        server_address = ('100.107.241.102', 12345)  # Replace with the server IP
         client_socket.connect(server_address)
         print("Connection successful.")
         break
@@ -32,7 +31,16 @@ def recvall(sock, count):
 
 # Load model from pl.LightningModule
 print("Load model")
-model = SteeringModel.load_from_checkpoint(checkpoint_path="checkpoints/epoch=8-step=360.ckpt")
+# model = SteeringModel.load_from_checkpoint(checkpoint_path="checkpoints/epoch=14-step=1110.ckpt")
+# model = SteeringModel.load_from_checkpoint(checkpoint_path="checkpoints/epoch=9-step=1590.ckpt")
+# model = SteeringModel.load_from_checkpoint(checkpoint_path="checkpoints/epoch=9-step=1700.ckpt")
+# model = SteeringModel.load_from_checkpoint(checkpoint_path="checkpoints/epoch=34-step=5950.ckpt") # vit
+# model = SteeringModel.load_from_checkpoint(checkpoint_path="checkpoints/epoch=1-step=406.ckpt") # vit
+model = SteeringModel.load_from_checkpoint(checkpoint_path="checkpoints/epoch=4-step=1015.ckpt") # vit
+
+
+
+
 model.to('mps')
 print("loaded")
 
@@ -47,18 +55,6 @@ try:
     steering = 0.0  # Default steering
     forward_value = 0.0  # Default forward value
 
-    def on_press(key):
-        global forward_value
-        if key == keyboard.Key.up:  # if the 'up' arrow key is pressed
-            print("Go")
-            forward_value = 1.0
-        else:
-            print("stop")
-            forward_value = 0.0
-
-    # Start listening to keyboard
-    # listener = keyboard.Listener(on_press=on_press)
-    # listener.start()
     while True:
         # Receive frame
         length = struct.unpack("<L", recvall(client_socket, 4))[0]
@@ -82,19 +78,20 @@ try:
         # Run frame through pytorch lightning model
         preds = model(tensor_image.to('mps'))
         steering = preds[0].item()
-        print("Steering: ", steering)
+
+        # steering = min(-1.0, max(1.0, steering * 1.5))
+        print("Steering: ", steering, "Forward: ", forward_value)
 
         # Check if space is pressed for forward motion
-        key = cv2.waitKey(1) & 0xFF
-        if key == ord('g'):
-            print("Go")
-            forward_value = 1.0
-        else:
-            print("stop")
-            forward_value = 0.0
+        forward_value = 5.0
+        # key = cv2.waitKey(5) & 0xFF
+        # if key == ord('g'):
+        #     forward_value = 1.0
+        # else:
+        #     forward_value = 0.0
 
-        if key == ord('q'):
-            break
+        # if key == ord('q'):
+        #     break
         
         # Send steering and forward_value to the server
         client_socket.sendall(struct.pack('ff', steering, forward_value))

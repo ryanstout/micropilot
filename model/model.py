@@ -10,6 +10,7 @@ import timm
 from torchmetrics import MeanSquaredError
 from pytorch_lightning.loggers import WandbLogger
 import wandb
+from torch.utils.data import ConcatDataset
 
 class SteeringDataset(Dataset):
     def __init__(self, directory, transform=None):
@@ -65,26 +66,39 @@ class SteeringAnglePredictor(nn.Module):
             nn.Linear(512, 128),
             nn.ReLU(),
             nn.Linear(128, 1),
-            nn.Sigmoid()
+            # nn.Sigmoid()
+            nn.Tanh()
         )
     
     def forward(self, x):
         x = x[:, 1:, :]  # Skipping the [CLS] token
         x = self.model(x)
+        x = x[:, 0] # go to 1 dimensional
         # Scale output to range [-1, 1]
-        x = 2 * x - 1
+        # x = 2 * x - 1
         return x
 
 
 class SteeringDataModule(pl.LightningDataModule):
-    def __init__(self, data_dir='data/8', batch_size=16, num_workers=0):
+
+    def __init__(self, data_dir='data/27', batch_size=16, num_workers=0): # was data/15
         super().__init__()
         self.data_dir = data_dir
         self.batch_size = batch_size
         self.num_workers = num_workers  # Allow number of workers to be configurable
 
     def setup(self, stage=None):
-        dataset = SteeringDataset(directory=self.data_dir, transform=AugmentAndNormalize())
+
+        datasets = []
+        dataset_paths = ["data/15", "data/27", "data/29", "data/31", "data/34"]
+        for dataset_path in dataset_paths:
+            datasets.append(SteeringDataset(directory=dataset_path, transform=AugmentAndNormalize()))
+
+        # Combine with the old dataset
+        # dataset1 = SteeringDataset(directory="data/15", transform=AugmentAndNormalize())
+        dataset = ConcatDataset(datasets)
+
+
         train_size = int(0.8 * len(dataset))
         val_size = len(dataset) - train_size
         self.train_dataset, self.val_dataset = random_split(dataset, [train_size, val_size])
@@ -99,18 +113,11 @@ class SteeringDataModule(pl.LightningDataModule):
 class SteeringModel(pl.LightningModule):
     def __init__(self):
         super().__init__()
-        self.vit = False
+        self.vit = True
 
         if self.vit:
             self.feature_extractor = timm.create_model('vit_base_patch16_224', pretrained=True)
             self.steering_angle_predictor = SteeringAnglePredictor(feature_dim=768, num_patches=196)
-
-            # self.feature_extractor.head = nn.Identity()  # Remove classification head
-            # self.regressor = nn.Sequential(
-            #     nn.Linear(768, 256),
-            #     nn.ReLU(),
-            #     nn.Linear(256, 1)
-            # )
 
         else:
             self.feature_extractor = timm.create_model('mobilenetv3_large_100', pretrained=True, features_only=True)
@@ -137,7 +144,11 @@ class SteeringModel(pl.LightningModule):
 
         else:
             features = self.feature_extractor(x)
-        return self.regressor(features[-1])
+
+            # Run the regressor on the last feature map
+            x = self.regressor(features[-1])
+            x = x[:, 0]  # Go to 1 dimensional
+            return x
 
     def training_step(self, batch, batch_idx):
         images, labels = batch
@@ -165,9 +176,9 @@ class SteeringModel(pl.LightningModule):
                 pred = preds[i]
 
                 # Log it as a table row
-                diff = abs(label - pred[0])
+                diff = abs(label - pred)
                 self.logger.experiment.log({
-                    'image': wandb.Image(image, caption=f"Label: {round(label, 3)}, Pred: {round(pred[0], 3)}, Diff: {round(diff, 3)}")
+                    'image': wandb.Image(image, caption=f"Label: {round(label, 3)}, Pred: {round(pred, 3)}, Diff: {round(diff, 3)}")
                 })
 
 

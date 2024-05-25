@@ -9,6 +9,8 @@ import struct
 import socket
 import time
 
+ip = 'raspberypi'
+
 # Next folder
 folder_name = 0
 while True:
@@ -22,7 +24,7 @@ while True:
 while True:
     try:
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        server_address = ('192.168.1.212', 12345)  # Replace with the server IP
+        server_address = (ip, 12345)  # Replace with the server IP
         client_socket.connect(server_address)
         print("Connection successful.")
         break

@@ -73,7 +73,7 @@ try:
                         steering = -1.0
                     
                     print("Steering:", steering)
-                    px.set_dir_servo_angle((steering * 20) + (0.3 * 20))
+                    px.set_dir_servo_angle((steering * 20) + (0.35 * 20)) # was 0.35
                 elif event.axis == 1:
                     forward_value = event.value
                     if forward_value < 0.1 and forward_value > -0.1:
