@@ -1,4 +1,28 @@
+# The AI model and training code for MicroPilot
+
+# There are two different model options (controlled by `vit = True/False`)
+# 
+# 1. Vision Transformer (ViT) Based - `vit = True`
+#     - Extracts high-level image features from a pretrained Vit model, and 
+#       feeds them to SteeringAnglePredictor, which uses a series of Linear
+#       layers to predict the steering angle.
 #
+# 2. MobileNetV3 Based - `vit = False`
+#     - Extracts high-level image features from a pretrained MobileNetV3 model,
+#      and feeds them to a series of Convolutional layers to predict the 
+#      steering angle.
+#
+# Both work, Vit is a bit better in terms of performance. Mobilenet version is
+# faster.
+#
+# For Augmentation, we use a simple flip with 50% probability. This helps 
+# prevent a bias towards one direction or the other, which is common in tracks
+# that aren't figure 8's. (Because on most loop tracks, you'll be turning one
+# way more often than the other.)
+#
+# We use PyTorch Lightning to simplify a lot of the boilerplate pytorch code.
+#
+# Optimmizer is Adam
 
 import os
 import torch

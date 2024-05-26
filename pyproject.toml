@@ -15,7 +15,7 @@ timm = "^0.9.16"
 numpy = "^1.26.4"
 opencv-python = "^4.9.0.80"
 pytorch-lightning = "^2.2.3"
-pynput = "^1.7.6"
+pygame = "^2.5.2"
 
 
 [build-system]

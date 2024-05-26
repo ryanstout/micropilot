@@ -4,7 +4,7 @@ import os
 import numpy as np
 import struct
 import time
-from model.model import SteeringModel
+from model import SteeringModel
 import torchvision.transforms as transforms
 from PIL import Image
 
@@ -33,11 +33,6 @@ def recvall(sock, count):
 
 # Load model from pl.LightningModule
 print("Load model")
-# model = SteeringModel.load_from_checkpoint(checkpoint_path="checkpoints/epoch=14-step=1110.ckpt")
-# model = SteeringModel.load_from_checkpoint(checkpoint_path="checkpoints/epoch=9-step=1590.ckpt")
-# model = SteeringModel.load_from_checkpoint(checkpoint_path="checkpoints/epoch=9-step=1700.ckpt")
-# model = SteeringModel.load_from_checkpoint(checkpoint_path="checkpoints/epoch=34-step=5950.ckpt") # vit
-# model = SteeringModel.load_from_checkpoint(checkpoint_path="checkpoints/epoch=1-step=406.ckpt") # vit
 model = SteeringModel.load_from_checkpoint(checkpoint_path="checkpoints/epoch=4-step=1015.ckpt") # vit
 
 model.eval()
