@@ -8,6 +8,8 @@ from model.model import SteeringModel
 import torchvision.transforms as transforms
 from PIL import Image
 
+vit = True
+
 # Connect to the server
 while True:
     try:
@@ -38,6 +40,8 @@ print("Load model")
 # model = SteeringModel.load_from_checkpoint(checkpoint_path="checkpoints/epoch=1-step=406.ckpt") # vit
 model = SteeringModel.load_from_checkpoint(checkpoint_path="checkpoints/epoch=4-step=1015.ckpt") # vit
 
+model.eval()
+
 
 
 
@@ -48,7 +52,7 @@ normalize = transforms.Compose([
                 transforms.Resize((224, 224)),
                 # transforms.GaussianBlur(kernel_size=(5, 9), sigma=(0.1, 5)),
                 transforms.ToTensor(),
-                transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+                transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]) if vit else None
             ])
 
 try:
