@@ -4,6 +4,11 @@ MicroPilot is an autopilot for a DIY self driving (Toy) car, originally built du
 
 Put down masking tape and you can teach it to stay in the lines.
 
+https://github.com/ryanstout/micropilot/assets/42336/6ecfd2cd-aac4-425a-8c0f-2938254f6a81
+
+https://github.com/ryanstout/micropilot/assets/42336/d82b58d1-e968-49da-aaa0-88fc95935a85
+
+
 The car does a great job of stays in the lanes. This was a fun project that the students seemed really excited about.
 
 Due to limited time, we had to gloss over quite a few details, but I think this did a good job of getting them excited about computer science, engineering, and AI. There were lots of "where do I learn more" questions.
