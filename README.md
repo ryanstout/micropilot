@@ -21,6 +21,8 @@ We created a course by putting down masking tape for lanes. The goal was to get 
 
 It's probably possible to run these models on the Pi itself (especially the Pi5), but since there's no cooling in our setup, the Pi gets thermal throttled quite a bit. I found it easier to just connect the Pi to the Wifi, then record to and run inference on my machine. (Sending frames over a TCP connection)
 
+<img width="1367" alt="Screenshot 2024-05-27 at 5 42 15 PM" src="https://github.com/ryanstout/micropilot/assets/42336/6a2182d5-4a6c-4222-84ac-9f62e6fdaade">
+
 To train the car, you attach a USB Joystick and drive the course. When the left upper button is held down, it records frames from the webcam and the steering angle of the joystick. The goal is to get a few types of training data:
 
 - Footage driving the center of the track
