@@ -2,7 +2,7 @@
 
 MicroPilot is an autopilot for a DIY self driving (Toy) car, originally built during the Stem Club at [St. John Paul the Great Catholic Highschool](https://www.jpthegreatdenver.org/).
 
-Put down masking tape and you can teach it to stay in the lines.
+Put down masking tape and you can teach it to stay in the lines using only the frames from a Webcam.
 
 https://github.com/ryanstout/micropilot/assets/42336/6ecfd2cd-aac4-425a-8c0f-2938254f6a81
 
