@@ -79,4 +79,4 @@ As the model trains, it will save the top epochs in the checkpoints folder. I al
 
 ### Run Autopilot
 
-If you're not on a Apple Silicon Mac, be sure to change your accelerator on line 273 of `model.py`. To run the autopilot, put the car on the track and run `python drive_server.py` on the Pi, and `python drive_client.py` on your machine.
+If you're not on a Apple Silicon Mac, be sure to change your accelerator in `config.py`. To run the autopilot, put the car on the track and run `python drive_server.py` on the Pi, and `python drive_client.py` on your machine.

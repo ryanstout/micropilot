@@ -259,7 +259,7 @@ class SteeringModel(pl.LightningModule):
 
 if __name__ == "__main__":
     data_module = SteeringDataModule(
-        ["data/15", "data/27", "data/29", "data/31", "data/53"]#, "data/34"]
+        ["data/15", "data/27", "data/29", "data/31", "data/53", "data/54", "data/34"]
     )
     model = SteeringModel()
 

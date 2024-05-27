@@ -59,7 +59,7 @@ try:
         forward_value = 2
         px.forward(forward_value)
 
-        sleep(0.1)
+        sleep(0.05)
 finally:
     cap.release()
     connection.close()
