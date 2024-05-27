@@ -9,7 +9,7 @@ import struct
 import socket
 import time
 
-ip = 'raspberypi'
+from config import ip
 
 # Next folder
 folder_name = 0

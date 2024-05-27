@@ -29,6 +29,7 @@ cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 
 # TCP Server setup
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 host_ip = '0.0.0.0'  # Listen on all network interfaces
 port = 12345
 server_socket.bind((host_ip, port))
@@ -78,9 +79,15 @@ try:
                     forward_value = event.value
                     if forward_value < 0.1 and forward_value > -0.1:
                         forward_value = 0.0
-                    forward_value *= -5.0
+                    # forward_value *= -5.0
+                    forward_value *= -1.0
                     print("Forward value:", forward_value)
+                    # px.set_power(forward_value)
+                    print("FV: ", forward_value)
+                    forward_value = int(forward_value * 10)
                     px.forward(forward_value)
+                    # px.set_motor_speed(1, forward_value)
+                    # px.set_motor_speed(2, forward_value * -1)
             elif event.type == pygame.JOYBUTTONDOWN and event.button == 4:
                 recording = True
             elif event.type == pygame.JOYBUTTONUP and event.button == 4:

@@ -16,6 +16,7 @@ cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 
 # TCP Server setup
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 host_ip = '0.0.0.0'  # Listen on all network interfaces
 port = 12345
 server_socket.bind((host_ip, port))
@@ -41,7 +42,7 @@ try:
         
         # Resize frame to 224x224
         frame = cv2.resize(frame, (224, 224))
-        
+    
         # Send frame to client
         send_frame(frame)
 
@@ -54,6 +55,8 @@ try:
         
         # Set steering and forward on PiCar-X
         px.set_dir_servo_angle((steering * 20) + (0.3 * 20))
+
+        forward_value = 2
         px.forward(forward_value)
 
         sleep(0.1)

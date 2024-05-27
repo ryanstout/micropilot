@@ -37,8 +37,8 @@ from torchmetrics import MeanSquaredError
 from pytorch_lightning.loggers import WandbLogger
 import wandb
 from torch.utils.data import ConcatDataset
+from config import vit, accelerator, normalize_to_imnet
 
-vit = True
 
 class SteeringDataset(Dataset):
     def __init__(self, directory, transform=None):
@@ -69,7 +69,7 @@ class AugmentAndNormalize(object):
     def __init__(self):
         steps = [transforms.Resize((224, 224)), transforms.ToTensor()]
 
-        if not vit:
+        if normalize_to_imnet:
             steps.append(
                 transforms.Normalize(
                     mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]
@@ -259,7 +259,7 @@ class SteeringModel(pl.LightningModule):
 
 if __name__ == "__main__":
     data_module = SteeringDataModule(
-        ["data/15", "data/27", "data/29", "data/31", "data/34"]
+        ["data/15", "data/27", "data/29", "data/31", "data/53"]#, "data/34"]
     )
     model = SteeringModel()
 
@@ -270,8 +270,6 @@ if __name__ == "__main__":
     # Initialize Weights & Biases logger
     wandb_logger = WandbLogger(project="SteeringModel", log_model=True)
 
-    accelerator = "mps"
-    # accelerator = 'cpu'
     # Initialize the Trainer with the desired precision
     trainer = pl.Trainer(
         max_epochs=100,

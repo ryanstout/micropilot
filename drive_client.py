@@ -7,14 +7,13 @@ import time
 from model import SteeringModel
 import torchvision.transforms as transforms
 from PIL import Image
-
-vit = True
+from config import ip, checkpoint_path, vit, normalize_to_imnet
 
 # Connect to the server
 while True:
     try:
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        server_address = ('100.107.241.102', 12345)  # Replace with the server IP
+        server_address = (ip, 12345)  # Replace with the server IP
         client_socket.connect(server_address)
         print("Connection successful.")
         break
@@ -33,7 +32,7 @@ def recvall(sock, count):
 
 # Load model from pl.LightningModule
 print("Load model")
-model = SteeringModel.load_from_checkpoint(checkpoint_path="checkpoints/epoch=4-step=1015.ckpt") # vit
+model = SteeringModel.load_from_checkpoint(checkpoint_path=checkpoint_path)
 
 model.eval()
 
@@ -43,12 +42,18 @@ model.eval()
 model.to('mps')
 print("loaded")
 
-normalize = transforms.Compose([
-                transforms.Resize((224, 224)),
-                # transforms.GaussianBlur(kernel_size=(5, 9), sigma=(0.1, 5)),
-                transforms.ToTensor(),
-                transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]) if vit else None
-            ])
+
+
+steps = [transforms.Resize((224, 224)), transforms.ToTensor()]
+
+if normalize_to_imnet:
+    steps.append(
+        transforms.Normalize(
+            mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]
+        )
+    )
+
+normalize = transforms.Compose(steps)
 
 try:
     steering = 0.0  # Default steering

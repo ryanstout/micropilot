@@ -47,7 +47,7 @@ The SunFounder Smart Kit (PiCar) is a good start. I didn't end up using the "hea
 
 # How to Train
 
-To simplify things I used tailscale to map the Pi into my network. The client code has an `ip` variable you can change.
+To simplify things I used tailscale to map the Pi into my network. config.py has an `ip` variable you can change.
 
 ### Setup
 
@@ -59,7 +59,7 @@ Then `poetry install` on the client (your machine) and the server (the Pi)
 
 ### Collecting Training Data
 
-Plug the USB Joystick into the car. Then make sure you've set `ip` in train_client.py, then run `python train_server.py` on the Pi and `python train_client.py` on your machine. (I used deploy.sh to rsync the project to the Pi)
+Plug the USB Joystick into the car. Then make sure you've set `ip` in config.py, then run `python train_server.py` on the Pi and `python train_client.py` on your machine. (I used deploy.sh to rsync the project to the Pi)
 
 Hold down the top left button to start recording. Make sure your steering angles are correct when recording. See the "How it Works" section for details on what good training data looks like.
 
@@ -73,9 +73,9 @@ SteeringDataModule in model.py takes in a list of directories with training. Upd
 python model.py
 ```
 
-This will take some time :-) About 30 minutes on my M1 Mac before loss stops improving. We used PyTorch Lightning for the model and the excellent `timm` library for the pretrained Vit. There is also a version based on mobilenetv3 (which is a much smaller model, but it's not quite as good) Change the `vit = True` if you want to try the mobilenet version. You could definitely run the mobilenet version on the car itself. (And maybe the Vit also)
+This will take some time :-) About 30 minutes on my M1 Mac before loss stops improving. We used PyTorch Lightning for the model and the excellent `timm` library for the pretrained Vit. There is also a version based on mobilenetv3 (which is a much smaller model, but it's not quite as good) Change the `vit = True` in config.py if you want to try the mobilenet version. You could definitely run the mobilenet version on the car itself. (And maybe the Vit also)
 
-As the model trains, it will save the top epochs in the checkpoints folder. I also have it setup to log to wandb, but this is optional. Once you have a top performing checkpoint, you can update the model path on line 36 of `drive_client.py`
+As the model trains, it will save the top epochs in the checkpoints folder. I also have it setup to log to wandb, but this is optional. Once you have a top performing checkpoint, you can update the model checkpoint path in `config.py`
 
 ### Run Autopilot
 
